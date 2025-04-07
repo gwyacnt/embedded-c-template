@@ -16,12 +16,18 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y cmake g++ gcc libgtest-dev
 
-    - name: Build
-      run: |
-        cmake -S . -B build
-        cmake --build build
 
-    - name: Run tests
+    - name: Install ARM GCC toolchain
       run: |
+        sudo apt update
+        sudo apt install -y gcc-arm-none-eabi
+
+    - name: Configure and build (ARM toolchain)
+      run: |
+        python build.py --toolchain toolchains/gcc-arm-none-eabi.cmake
+
+    - name: Run Unit Tests (host build)
+      run: |
+        python build.py
         cd build
         ctest --output-on-failure
